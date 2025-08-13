@@ -1,0 +1,8 @@
+body { background-color: #0f1115; color: #ddd; }
+.bg-dark { background-color: #0b0d12 !important; }
+.card { background: #151823; color: #eaeefb; border: 1px solid #23283b; }
+.table { color: #eaeefb; }
+.bg-gradient { background: linear-gradient(135deg, #0ea5ea, #0bd1d1 60%, #6ee7b7); }
+.btn-primary { border-color: transparent; }
+footer { background:#0b0d12; }
+a { text-decoration: none; }
