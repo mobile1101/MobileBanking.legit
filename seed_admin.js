@@ -1,20 +1,16 @@
-const bcrypt = require('bcrypt');
-const { db } = require('./db');
-
-async function ensureAdminSeed() {
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const { run, get } = require('./db');
+(async ()=>{
   const email = process.env.ADMIN_EMAIL || 'admin@mobilebanking.legit';
-  const password = process.env.ADMIN_PASSWORD || 'ChangeThisPassword123!';
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-  const now = new Date().toISOString();
-  if (!existing) {
-    const hash = await bcrypt.hash(password, 12);
-    db.prepare(`INSERT INTO users (email, password_hash, full_name, role, balance_cents, created_at, updated_at)
-                VALUES (?, ?, ?, 'admin', 0, ?, ?)`)
-      .run(email, hash, 'Administrator', now, now);
-    console.log('Seeded admin user:', email);
+  const pass = process.env.ADMIN_PASSWORD || 'ChangeThisPassword123!';
+  const hash = await bcrypt.hash(pass, 12);
+  const existing = await get('SELECT * FROM admins WHERE id = 1') ;
+  if(existing){
+    await run('UPDATE admins SET email=?, passwordHash=? WHERE id=1', [email, hash]);
   } else {
-    console.log('Admin exists:', email);
+    await run('INSERT INTO admins(id, email, passwordHash) VALUES(1, ?, ?)', [email, hash]);
   }
-}
-
-module.exports = { ensureAdminSeed };
+  console.log('Admin seeded');
+  process.exit(0);
+})();
